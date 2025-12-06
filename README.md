@@ -28,6 +28,26 @@ Create the config file if it doesn’t exist:
 python3 main.py --config
 ```
 
+### Download model checkpoints
+Download the SAM2 model checkpoint files from:
+
+https://github.com/facebookresearch/sam2?tab=readme-ov-file#download-checkpoints
+
+Place the downloaded checkpoint files into the default directory:
+
+```
+~/.config/sam2/checkpoints/
+```
+
+Your configuration directory should look like:
+
+```
+~/.config/sam2/
+    config.yaml
+    checkpoints/
+        <checkpoint files>
+```
+
 ---
 
 ## Usage
@@ -64,7 +84,7 @@ Place the project in `/opt`:
 sudo cp -r sam2-tools /opt/
 ```
 
-Create launcher `/usr/local/bin/sam2-tools`:
+Create launcher in `/usr/local/bin/sam2-tools`:
 ```
 #!/bin/bash
 cd /opt/sam2-tools
