@@ -5,7 +5,8 @@ It supports box selection, auto segmentation, and point‑based segmentation.
 ---
 
 ## Features
-• GUI and CLI interface  
+• CLI interface for integration with Darktable  
+• Basic GUI interface  
 • Works with Darktable via PFM output  
 • Segmentation modes: Box, Auto, Points  
 • User config stored in `~/.config/sam2/config.yaml`  
