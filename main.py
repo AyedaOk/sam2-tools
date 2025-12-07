@@ -30,7 +30,7 @@ def main():
     # Launch GUI if no CLI args were given
     if len(sys.argv) == 1:
         from sam2_tools.gui import start_gui
-        start_gui()
+        start_gui
         return
     if args.config:
         cfg = load_or_create_config()

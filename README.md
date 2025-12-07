@@ -100,6 +100,76 @@ Now you can run:
 ```
 sam2-tools
 ```
+## Windows
+Install the following first:
+
+• Python 3.10–3.13  
+https://www.python.org/downloads/  
+
+• Microsoft Visual C++ Redistributable (required for PyTorch)  
+https://aka.ms/vs/17/release/vc_redist.x64.exe  
+
+• Git for Windows  
+https://git-scm.com/download/win  
+
+Open PowerShell and clone the project (recommended location: Documents):
+
+```
+cd $env:USERPROFILE\Documents
+git clone https://github.com/AyedaOk/sam2-tools
+cd sam2-tools
+python -m venv venv
+```
+
+If PowerShell blocks script execution, allow local scripts:
+
+```
+Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
+```
+
+Activate the virtual environment and install dependencies:
+
+```
+venv\Scripts\activate
+pip install -r requirements.txt
+```
+
+Initialize the configuration file (if it does not already exist):
+
+```
+deactivate
+.\launcher\sam2-tools.bat --config
+```
+
+Download the SAM2 model checkpoints from:  
+https://github.com/facebookresearch/sam2?tab=readme-ov-file#download-checkpoints
+
+Place all downloaded checkpoint files into the default directory:
+
+```
+C:\Users\YOURNAME\AppData\Roaming\sam2\checkpoints\
+```
+
+Your configuration directory should look like:
+
+```
+AppData\Roaming\sam2\
+    config.yaml
+    checkpoints\
+        <checkpoint files>
+```
+
+Run the GUI:
+
+```
+.\launcher\sam2-tools.bat
+```
+
+or the packaged executable (if present):
+
+```
+.\launcher\sam2-tools.exe
+```
 
 ---
 

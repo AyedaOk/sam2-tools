@@ -58,16 +58,23 @@ def load_or_create_config():
     cfg_path = get_config_path()
 
     if not cfg_path.exists():
+        if platform.system().lower() == "windows":
+            # Correct Windows path
+            base = Path(os.getenv("APPDATA")) / "sam2" / "checkpoints"
+        else:
+            # Correct Linux/macOS path
+            base = Path.home() / ".config" / "sam2" / "checkpoints"
+
         default = {
             "checkpoints": {
-                "1": str(Path.home() / ".config/sam2/checkpoints/sam2.1_hiera_large.pt"),
-                "2": str(Path.home() / ".config/sam2/checkpoints/sam2.1_hiera_base_plus.pt"),
-                "3": str(Path.home() / ".config/sam2/checkpoints/sam2.1_hiera_small.pt"),
-                "4": str(Path.home() / ".config/sam2/checkpoints/sam2.1_hiera_tiny.pt"),
+                "1": str(base / "sam2.1_hiera_large.pt"),
+                "2": str(base / "sam2.1_hiera_base_plus.pt"),
+                "3": str(base / "sam2.1_hiera_small.pt"),
+                "4": str(base / "sam2.1_hiera_tiny.pt"),
             }
         }
 
-        (cfg_path.parent / "checkpoints").mkdir(parents=True, exist_ok=True)
+        base.mkdir(parents=True, exist_ok=True)
 
         with open(cfg_path, "w") as f:
             yaml.dump(default, f)
