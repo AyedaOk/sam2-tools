@@ -15,6 +15,7 @@ It supports box selection, auto segmentation, and point‑based segmentation.
 ---
 
 ## Install
+### Linux
 ```
 git clone https://github.com/AyedaOk/sam2-tools.git
 cd sam2-tools
@@ -48,35 +49,13 @@ Your configuration directory should look like:
         <checkpoint files>
 ```
 
----
+Run the GUI:
 
-## Usage
-
-### GUI
 ```
 python3 main.py
 ```
 
-### CLI
-
-Auto segmentation:
-```
-python3 main.py --auto -i /path/to/input.jpg -o /path/to/output/
-```
-
-Box mode (default):
-```
-python3 main.py -i /path/to/input.jpg -o /path/to/output/
-```
-
-Point‑based segmentation:
-```
-python3 main.py --points -i /path/to/input.jpg -o /path/to/output/
-```
-
----
-
-## Optional: System‑wide launcher  
+#### Optional: System‑wide launcher  
 To install like a system‑wide “app”:
 
 Place the project in `/opt`:
@@ -100,7 +79,7 @@ Now you can run:
 ```
 sam2-tools
 ```
-## Windows
+### Windows 
 Install the following first:
 
 • Python 3.10–3.13  
@@ -134,11 +113,9 @@ venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-Initialize the configuration file (if it does not already exist):
-
+Create the config file if it doesn’t exist:
 ```
-deactivate
-.\launcher\sam2-tools.bat --config
+python main.py --config
 ```
 
 Download the SAM2 model checkpoints from:  
@@ -165,10 +142,36 @@ Run the GUI:
 .\launcher\sam2-tools.bat
 ```
 
-or the packaged executable (if present):
+or 
 
 ```
 .\launcher\sam2-tools.exe
+```
+
+---
+
+## Usage
+
+### GUI
+```
+python3 main.py
+```
+
+#### CLI
+
+Auto segmentation:
+```
+python3 main.py --auto -i /path/to/input.jpg -o /path/to/output/
+```
+
+Box mode (default):
+```
+python3 main.py -i /path/to/input.jpg -o /path/to/output/
+```
+
+Point‑based segmentation:
+```
+python3 main.py --points -i /path/to/input.jpg -o /path/to/output/
 ```
 
 ---
