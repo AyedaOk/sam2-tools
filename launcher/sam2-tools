@@ -1,0 +1,4 @@
+#!/bin/bash
+# For Linux, place this file in /usr/local/bin/ and make it executable sudo chmod +x /usr/local/bin/sam2-tools
+cd /opt/sam2-tools
+./venv/bin/python3 main.py "$@"
