@@ -40,8 +40,7 @@ class PointSelector:
             self.points_pos.append((x, y))
             self.update_mask()
 
-        elif event == cv2.EVENT_RBUTTONDOWN:
-            # Background click
+        elif event == cv2.EVENT_MBUTTONDOWN:
             self.points_neg.append((x, y))
             self.update_mask()
 
@@ -146,7 +145,7 @@ def run_point_segmentation(
         predictor.set_image(rgb)
 
     # Create selector interface
-    win = "Point Selection (L=FG, R=BG, Enter=OK, R=reset, Esc=cancel)"
+    win = "Left Click=Positive, Middle Click=Negative, Enter=Confirm, R=Reset, Esc=Cancel"
     selector = PointSelector(bgr_img, predictor)
 
     cv2.namedWindow(win, cv2.WINDOW_NORMAL)
