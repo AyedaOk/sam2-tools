@@ -16,6 +16,14 @@ It supports box selection, auto segmentation, and point‑based segmentation.
 
 ## Install
 ### Linux
+Install the following first:
+
+• Python 3.10+ (install with: `sudo apt install python3` or `sudo pacman -S python` or `sudo dnf install python3`)  
+
+• Tkinter (install with: `sudo apt install python3-tk` or `sudo pacman -S tk` or `sudo dnf install python3-tkinter` )  
+
+• Git (install with: `sudo apt install git` or `sudo pacman -Syu git` or `sudo dnf install git` )  
+
 ```
 git clone https://github.com/AyedaOk/sam2-tools.git
 cd sam2-tools
@@ -29,7 +37,6 @@ Create the config file if it doesn’t exist:
 python3 main.py --config
 ```
 
-### Download model checkpoints
 Download the SAM2 model checkpoint files from:
 
 https://github.com/facebookresearch/sam2?tab=readme-ov-file#download-checkpoints
@@ -55,7 +62,7 @@ Run the GUI:
 python3 main.py
 ```
 
-#### Optional: System‑wide launcher  
+#### Optional: System‑wide launcher (required for Darktable integration)
 To install like a system‑wide “app”:
 
 Place the project in `/opt`:
@@ -176,10 +183,6 @@ python3 main.py --points -i /path/to/input.jpg -o /path/to/output/
 
 ---
 
-## Requirements
-• Python 3.10+  
-• Tkinter (install with: `sudo apt install python3-tk` or `sudo pacman -S tk`)  
-
----
-
 ## License
+
+GPL-3.0
