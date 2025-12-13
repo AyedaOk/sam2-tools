@@ -99,7 +99,7 @@ def run_point_segmentation(
     input_path,
     output_path,
     num_masks=1,
-    model_id=1,
+    model_id,
     pfm=False,
 ):
     # Prepare output directories
