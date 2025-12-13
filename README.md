@@ -166,6 +166,94 @@ or
 .\launcher\sam2-tools.exe
 ```
 
+### macOS Installation Steps
+
+Install Homebrew (required)  
+```
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+```
+
+Install Python, Git, and Tkinter
+```
+brew install python git python-tk
+```
+
+Clone the project
+
+```
+cd ~
+git clone https://github.com/AyedaOk/sam2-tools.git
+cd sam2-tools
+```
+
+Create and activate the virtual environment:  
+
+```
+python3 -m venv venv
+source venv/bin/activate
+```
+
+Install dependencies  
+```
+pip install -r requirements.txt
+```
+
+Create the config file (first‑time setup)
+```
+python3 main.py --config
+```
+
+
+Download SAM2 model checkpoints from:
+https://github.com/facebookresearch/sam2?tab=readme-ov-file#download-checkpoints
+
+Place them here:
+
+```
+~/.config/sam2/checkpoints/
+```
+
+Your directory should look like:
+```
+~/.config/sam2/
+    config.yaml
+    checkpoints/
+        <checkpoint files>
+```
+
+### 8. Run the GUI  
+```
+python3 main.py
+```
+
+
+## Optional: macOS Launcher (required for Darktable integration)
+
+A double‑clickable launcher is included in:
+```
+sam2-tools/launcher/sam2-tools.command
+```
+
+Edit the first line to match where you cloned the project.  
+Example (default installation to your home directory):
+
+```
+#!/bin/bash
+cd "$HOME/sam2-tools"
+source venv/bin/activate
+python3.14 main.py "$@"
+```
+
+If your install directory is different, update the `cd` line accordingly.
+
+Make the launcher executable:
+
+```
+chmod +x sam2-tools/launcher/sam2-tools.command
+```
+
+Now you can **double‑click** `sam2-tools.command` in Finder to start the app.
+
 ---
 
 ## Usage
