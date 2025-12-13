@@ -17,8 +17,6 @@ It supports box selection, auto segmentation, and point‑based segmentation.
 ---
 
 ## Install
-### Linux
-
 ### Installation Videos
 
 Step‑by‑step install walkthrough on Linux:
