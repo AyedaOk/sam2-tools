@@ -13,19 +13,16 @@ It supports box selection, auto segmentation, and point‑based segmentation.
 - User config stored in `~/.config/sam2/config.yaml`  
 - Cross‑platform: Linux, macOS, Windows  
 
-
 ---
 
 ## Install
 ### Installation Videos
 
-Step‑by‑step install walkthrough on Linux:
+Step‑by‑step install walkthrough on Linux → https://youtu.be/C98gejXkQqI
 
-[![Installation video](https://img.youtube.com/vi/C98gejXkQqI/0.jpg)](https://youtu.be/C98gejXkQqI)
+Step‑by‑step install walkthrough on Windows → Comming soon...
 
-Step‑by‑step install walkthrough on Windows: 
-
-Comming soon...
+Step‑by‑step install walkthrough on macOS → Comming soon...
 
 ### Linux Installation Steps:
 
