@@ -5,24 +5,40 @@ It supports box selection, auto segmentation, and point‑based segmentation.
 ---
 
 ## Features
-• CLI interface for integration with Darktable  
-• Basic GUI interface  
-• Works with Darktable via PFM output  
-• Segmentation modes: Box, Auto, Points  
-• User config stored in `~/.config/sam2/config.yaml`  
-• Cross‑platform: Linux, macOS, Windows  
+- CLI interface for integration with Darktable  
+- Basic GUI interface  
+- Works with Darktable via PFM output  
+- Works with the Darktable SAM2 plugin – [GitHub repo](https://github.com/AyedaOk/DT_custom_script)
+- Segmentation modes: Box, Auto, Points  
+- User config stored in `~/.config/sam2/config.yaml`  
+- Cross‑platform: Linux, macOS, Windows  
+
 
 ---
 
 ## Install
 ### Linux
+
+### Installation Videos
+
+Step‑by‑step install walkthrough on Linux:
+
+[![Installation video](https://img.youtube.com/vi/C98gejXkQqI/0.jpg)](https://youtu.be/C98gejXkQqI)
+
+Step‑by‑step install walkthrough on Windows: 
+
+Comming soon...
+
+### Linux Installation Steps:
+
 Install the following first:
 
-• Python 3.10+ (install with: `sudo apt install python3` or `sudo pacman -S python` or `sudo dnf install python3`)  
+- Python 3.10+ (install with: `sudo apt install python3` or `sudo pacman -S python` or `sudo dnf install python3`)  
 
-• Tkinter (install with: `sudo apt install python3-tk` or `sudo pacman -S tk` or `sudo dnf install python3-tkinter` )  
+- Tkinter (install with: `sudo apt install python3-tk` or `sudo pacman -S tk` or `sudo dnf install python3-tkinter` )  
 
-• Git (install with: `sudo apt install git` or `sudo pacman -Syu git` or `sudo dnf install git` )  
+- Git (install with: `sudo apt install git` or `sudo pacman -Syu git` or `sudo dnf install git` )  
+
 
 ```
 git clone https://github.com/AyedaOk/sam2-tools.git
@@ -67,7 +83,7 @@ To install like a system‑wide “app”:
 
 Place the project in `/opt`:
 ```
-sudo cp -r sam2-tools /opt/
+sudo cp -rp sam2-tools /opt/
 ```
 
 Create launcher in `/usr/local/bin/sam2-tools`:
@@ -86,16 +102,16 @@ Now you can run:
 ```
 sam2-tools
 ```
-### Windows 
+### Windows Installation Steps:
 Install the following first:
 
-• Python 3.10–3.13  
+- Python 3.10–3.13  
 https://www.python.org/downloads/  
 
-• Microsoft Visual C++ Redistributable (required for PyTorch)  
+- Microsoft Visual C++ Redistributable (required for PyTorch)  
 https://aka.ms/vs/17/release/vc_redist.x64.exe  
 
-• Git for Windows  
+- Git for Windows  
 https://git-scm.com/download/win  
 
 Open PowerShell and clone the project (recommended location: Documents):
