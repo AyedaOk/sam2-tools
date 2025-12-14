@@ -25,26 +25,50 @@ err()  { printf "\033[1;31m%s\033[0m\n" "$1"; }
 source /etc/os-release
 
 detect_family() {
+    # Direct ID match
     case "$ID" in
-        ubuntu|debian|linuxmint|pop)
+        arch)
+            echo "arch"
+            return
+            ;;
+        ubuntu | debian | linuxmint | pop | zorin | elementary | neon)
             echo "debian"
+            return
+            ;;
+        fedora | rhel | rocky | almalinux | centos)
+            echo "fedora"
             return
             ;;
     esac
 
-    if [[ "$ID_LIKE" == *"debian"* ]]; then
+    # Fallback to ID_LIKE (when present)
+    if [[ "$ID_LIKE" == *"debian"* ]] || [[ "$ID_LIKE" == *"ubuntu"* ]]; then
         echo "debian"
         return
     fi
-    if [[ "$ID_LIKE" == *"ubuntu"* ]]; then
-        echo "debian"
+
+    if [[ "$ID_LIKE" == *"fedora"* ]] || [[ "$ID_LIKE" == *"rhel"* ]]; then
+        echo "fedora"
         return
     fi
+
     if [[ "$ID_LIKE" == *"arch"* ]]; then
         echo "arch"
         return
     fi
-    if [[ "$ID_LIKE" == *"fedora"* ]] || [[ "$ID" == "fedora" ]]; then
+
+    # Last‑chance fallback: detect pkg manager
+    if command -v pacman >/dev/null 2>&1; then
+        echo "arch"
+        return
+    fi
+
+    if command -v apt >/dev/null 2>&1; then
+        echo "debian"
+        return
+    fi
+
+    if command -v dnf >/dev/null 2>&1; then
         echo "fedora"
         return
     fi
