@@ -35,13 +35,13 @@ curl -fsSL https://raw.githubusercontent.com/AyedaOk/sam2-tools/main/installer/l
 
 Install the following first:
 
-- Python 3.10+ (install with: `sudo apt install python3` or `sudo pacman -S python` or `sudo dnf install python3`)  
+- Arch: `sudo pacman -S python tk git` 
 
-- Tkinter (install with: `sudo apt install python3-tk` or `sudo pacman -S tk` or `sudo dnf install python3-tkinter` )  
+- Debian/Ubuntu: `sudo apt install sudo apt install python3 python3-tk git` 
 
-- Git (install with: `sudo apt install git` or `sudo pacman -Syu git` or `sudo dnf install git` )  
+- Fedora: `sudo dnf install -y python3 git python3-tkinter gcc gcc-c++ make python-devel` 
 
-- On Fedora you have to install additional dependencies with: `sudo dnf install -y gcc gcc-c++ make python-devel`)
+Clone the repo, create the virtual environment and install the Python App:
 
 ```
 git clone https://github.com/AyedaOk/sam2-tools.git
