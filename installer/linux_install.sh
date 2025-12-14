@@ -255,7 +255,7 @@ if [[ "$REPLY" =~ ^[Yy]$ ]]; then
         warn "Darktable Lua directory not found — skipping plugin installation."
     fi
 else
-    warn "Skipping plugin installation."
+    warn "Skipping plugin installation"
 fi
 
 # ---------------------------------------------------------
