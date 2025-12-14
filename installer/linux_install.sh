@@ -238,7 +238,28 @@ warn "Testing launcher..."
 sam2-tools --help || warn "Launcher test failed — but installation may still be OK."
 
 # ---------------------------------------------------------
-# 10. Summary
+# 10. Installing Darktable plugin
+# ---------------------------------------------------------
+echo ""
+read -rp "Do you want to install Darktable plugin? [Y/n] " REPLY
+REPLY=${REPLY:-Y}
+
+if [[ "$REPLY" =~ ^[Yy]$ ]]; then
+    if [ -d "$HOME/.config/darktable/lua" ]; then
+        mkdir -p "$HOME/.config/darktable/lua/SAM2"
+        curl -fL \
+          -o "$HOME/.config/darktable/lua/SAM2/SAM2.lua" \
+          https://raw.githubusercontent.com/AyedaOk/DT_custom_script/main/SAM2.lua
+        ok "Plugin install completed."
+    else
+        warn "Darktable Lua directory not found — skipping plugin installation."
+    fi
+else
+    warn "Skipping plugin installation."
+fi
+
+# ---------------------------------------------------------
+# 11. Summary
 # ---------------------------------------------------------
 echo ""
 ok "=== Installation complete ==="
