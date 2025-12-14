@@ -37,7 +37,7 @@ Install the following first:
 
 - Arch: `sudo pacman -S python tk git` 
 
-- Debian/Ubuntu: `sudo apt install sudo apt install python3 python3-tk git` 
+- Debian/Ubuntu: `sudo apt install python3 python3-tk git` 
 
 - Fedora: `sudo dnf install -y python3 git python3-tkinter gcc gcc-c++ make python-devel` 
 
