@@ -7,17 +7,36 @@ echo "=== SAM2-Tools Installer ==="
 # Paths
 # ---------------------------------------------------------
 REPO_URL="https://github.com/AyedaOk/sam2-tools.git"
-INSTALL_DIR="$HOME/sam2-tools"
+INSTALL_DIR="$HOME/.local/opt/sam2-tools"
 VENV_DIR="$INSTALL_DIR/venv"
-CONFIG_DIR="$HOME/.config/sam2-tools"
+CONFIG_DIR="$HOME/.config/sam2"
 LAUNCHER_PATH="/usr/local/bin/sam2-tools"
+CHECKPOINT_DIR="$HOME/.config/sam2/checkpoints"
+TMPDIR="$HOME/.cache/sam2-tools/tmp"
 
+MODEL_URLS=(
+  "https://dl.fbaipublicfiles.com/segment_anything_2/092824/sam2.1_hiera_tiny.pt"
+  "https://dl.fbaipublicfiles.com/segment_anything_2/092824/sam2.1_hiera_small.pt"
+  "https://dl.fbaipublicfiles.com/segment_anything_2/092824/sam2.1_hiera_base_plus.pt"
+  "https://dl.fbaipublicfiles.com/segment_anything_2/092824/sam2.1_hiera_large.pt"
+)
 # ---------------------------------------------------------
-# Helper: colored messages
+# Helpers
 # ---------------------------------------------------------
 ok()   { printf "\033[1;32m%s\033[0m\n" "$1"; }
 warn() { printf "\033[1;33m%s\033[0m\n" "$1"; }
 err()  { printf "\033[1;31m%s\033[0m\n" "$1"; }
+
+download() {
+  if command -v curl >/dev/null 2>&1; then
+    curl -fL --progress-bar -o "$2" "$1"
+  elif command -v wget >/dev/null 2>&1; then
+    wget -O "$2" "$1"
+  else
+    err "Neither curl nor wget found."
+    exit 1
+  fi
+}
 
 # ---------------------------------------------------------
 # 1. Detect distro
@@ -116,7 +135,7 @@ if $missing; then
             sudo pacman -Syu --noconfirm python tk git
             ;;
         fedora)
-            sudo dnf install -y python3 python3-tkinter git
+            sudo dnf install -y python3 python3-tkinter git gcc gcc-c++ make python-devel
             ;;
     esac
 else
@@ -126,6 +145,7 @@ fi
 # ---------------------------------------------------------
 # 3. Clone or update repo
 # ---------------------------------------------------------
+mkdir -p "$(dirname "$INSTALL_DIR")"
 if [ -d "$INSTALL_DIR/.git" ]; then
     ok "Repository exists — updating..."
     git -C "$INSTALL_DIR" pull
@@ -135,7 +155,7 @@ else
 fi
 
 # ---------------------------------------------------------
-# 4. Create virtual environment
+# 4. Create virtual environment and activate the virtual environment
 # ---------------------------------------------------------
 if [ ! -d "$VENV_DIR" ]; then
     ok "Creating virtual environment..."
@@ -144,38 +164,57 @@ else
     ok "Virtual environment already exists."
 fi
 
-# ---------------------------------------------------------
-# 5. Activate virtual environment
-# ---------------------------------------------------------
-SHELL_NAME=$(basename "$SHELL")
-ok "Activating virtual environment for shell: $SHELL_NAME"
-
-case "$SHELL_NAME" in
-    fish)
-        source "$VENV_DIR/bin/activate.fish"
-        ;;
-    *)
-        source "$VENV_DIR/bin/activate"
-        ;;
-esac
+ok "Activating virtual environment for shell"
+source "$VENV_DIR/bin/activate"
 
 # ---------------------------------------------------------
-# 6. Install Python app
+# 5. Install Python app
 # ---------------------------------------------------------
 ok "Installing Python dependencies..."
+rm -rfd "$TMPDIR"
+mkdir -p "$TMPDIR"
+export TMPDIR                     #This is required on fedora to avoid Errorno 122 disk quota
 pip install --upgrade pip
-pip install -r "$INSTALL_DIR/requirements.txt" || true
+pip install -r "$INSTALL_DIR/requirements.txt"
+rm -rfd "$TMPDIR"
 
 # ---------------------------------------------------------
-# 7. Create config
+# 6. Create config
 # ---------------------------------------------------------
 mkdir -p "$CONFIG_DIR"
 
-if [ ! -f "$CONFIG_DIR/config.json" ]; then
+if [ ! -f "$CONFIG_DIR/config.yaml" ]; then
     ok "Generating config..."
     (cd "$INSTALL_DIR" && python3 main.py --config)
 else
     ok "Config already exists."
+fi
+
+# ---------------------------------------------------------
+# 7. Download models
+# ---------------------------------------------------------
+
+echo ""
+warn "SAM2 model checkpoints are required (~3–4GB total)."
+read -rp "Download them now? [Y/n] " REPLY
+REPLY=${REPLY:-Y}
+
+if [[ "$REPLY" =~ ^[Yy]$ ]]; then
+    mkdir -p "$CHECKPOINT_DIR"
+    for URL in "${MODEL_URLS[@]}"; do
+        FILE="$CHECKPOINT_DIR/$(basename "$URL")"
+        if [ -f "$FILE" ]; then
+            ok "Already exists: $(basename "$FILE")"
+        else
+            ok "Downloading $(basename "$FILE")..."
+            download "$URL" "$FILE"
+        fi
+    done
+    ok "Model download complete."
+else
+    warn "Skipping model download."
+    warn "You must place checkpoints in:"
+    warn "  $CHECKPOINT_DIR"
 fi
 
 # ---------------------------------------------------------
@@ -199,7 +238,28 @@ warn "Testing launcher..."
 sam2-tools --help || warn "Launcher test failed — but installation may still be OK."
 
 # ---------------------------------------------------------
-# 10. Summary
+# 10. Installing Darktable plugin
+# ---------------------------------------------------------
+echo ""
+read -rp "Do you want to install Darktable plugin? [Y/n] " REPLY
+REPLY=${REPLY:-Y}
+
+if [[ "$REPLY" =~ ^[Yy]$ ]]; then
+    if [ -d "$HOME/.config/darktable/lua" ]; then
+        mkdir -p "$HOME/.config/darktable/lua/SAM2"
+        curl -fL \
+          -o "$HOME/.config/darktable/lua/SAM2/SAM2.lua" \
+          https://raw.githubusercontent.com/AyedaOk/DT_custom_script/main/SAM2.lua
+        ok "Plugin install completed."
+    else
+        warn "Darktable Lua directory not found — skipping plugin installation."
+    fi
+else
+    warn "Skipping plugin installation."
+fi
+
+# ---------------------------------------------------------
+# 11. Summary
 # ---------------------------------------------------------
 echo ""
 ok "=== Installation complete ==="
