@@ -24,6 +24,10 @@ Step‑by‑step install walkthrough on Windows → Comming soon...
 
 Step‑by‑step install walkthrough on macOS → Comming soon...
 
+### Installation Scripts
+
+Linux: `curl -fsSL https://raw.githubusercontent.com/AyedaOk/sam2-tools/main/installer/linux_install.sh | bash`
+
 ### Linux Installation Steps:
 
 Install the following first:
