@@ -248,7 +248,7 @@ if [[ "$REPLY" =~ ^[Yy]$ ]]; then
     if [ -d "$HOME/.config/darktable/lua" ]; then
         mkdir -p "$HOME/.config/darktable/lua/SAM2"
         curl -fL \
-          -o "$HOME/.config/darktable/lua/SAM2/SAM2.lua" \
+          -o "$HOME/.config/darktable/lua/contrib/SAM2.lua" \
           https://raw.githubusercontent.com/AyedaOk/DT_custom_script/main/SAM2.lua
         ok "Plugin install completed."
     else
