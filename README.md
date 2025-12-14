@@ -34,6 +34,7 @@ Install the following first:
 
 - Git (install with: `sudo apt install git` or `sudo pacman -Syu git` or `sudo dnf install git` )  
 
+- On Fedora you have to install additional dependencies with: `sudo dnf install -y gcc gcc-c++ make python-devel`)
 
 ```
 git clone https://github.com/AyedaOk/sam2-tools.git
@@ -41,6 +42,22 @@ cd sam2-tools
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
+```
+
+On some Linux distributions, you might encounter this error during installation:
+
+```
+[Errno 122] Disk quota exceeded
+```
+
+This usually means your system’s temporary directory (`/tmp`) is full or restricted.  
+You can work around it by telling `pip` to use a temporary directory inside your home folder:
+
+```
+mkdir $HOME/tmp
+export TMPDIR=$HOME/tmp
+pip install -r requirements.txt
+rm -dfr $HOME/tmp
 ```
 
 Create the config file if it doesn’t exist:
@@ -78,6 +95,7 @@ To install like a system‑wide “app”:
 
 Place the project in `/opt`:
 ```
+cd ..
 sudo cp -rp sam2-tools /opt/
 ```
 
