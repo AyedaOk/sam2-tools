@@ -196,7 +196,7 @@ fi
 
 echo ""
 warn "SAM2 model checkpoints are required (~3–4GB total)."
-read -rp "Download them now? [Y/n] " REPLY
+read -rp "Download them now? [Y/n] " REPLY </dev/tty
 REPLY=${REPLY:-Y}
 
 if [[ "$REPLY" =~ ^[Yy]$ ]]; then
@@ -241,7 +241,7 @@ sam2-tools --help || warn "Launcher test failed — but installation may still b
 # 10. Installing Darktable plugin
 # ---------------------------------------------------------
 echo ""
-read -rp "Do you want to install Darktable plugin? [Y/n] " REPLY
+read -rp "Do you want to install Darktable plugin? [Y/n] " REPLY </dev/tty
 REPLY=${REPLY:-Y}
 
 if [[ "$REPLY" =~ ^[Yy]$ ]]; then
