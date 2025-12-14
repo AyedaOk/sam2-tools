@@ -260,11 +260,12 @@ If your install directory is different, update the `cd` line accordingly.
 Make the launcher executable:
 
 ```
+cd ..
 chmod +x sam2-tools/launcher/sam2-tools.command
 ```
 
 Now you can **double‑click** `sam2-tools.command` in Finder to start the app.
----
+
 
 ## Usage
 
