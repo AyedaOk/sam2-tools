@@ -1,6 +1,5 @@
 # SAM2‑Tools
-SAM2‑Tools is a lightweight Python application offering both a simple GUI and command‑line interface for running Meta AI’s Segment Anything 2 (SAM2) model.  
-It supports box selection, auto segmentation, and point‑based segmentation.
+SAM2‑Tools is a lightweight Python application offering both a simple GUI and command‑line interface for running Meta AI’s Segment Anything 2 (SAM2) model. It supports box selection, auto segmentation, and point‑based segmentation.
 
 ---
 
@@ -20,7 +19,7 @@ It supports box selection, auto segmentation, and point‑based segmentation.
 
 Step‑by‑step install walkthrough on Linux → https://youtu.be/C98gejXkQqI
 
-Step‑by‑step install walkthrough on Windows → Comming soon...
+Step‑by‑step install walkthrough on Windows → https://youtu.be/atBNxKHZ0ag
 
 Step‑by‑step install walkthrough on macOS → Comming soon...
 

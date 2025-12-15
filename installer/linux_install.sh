@@ -174,6 +174,17 @@ ok "Installing Python dependencies..."
 rm -rfd "$TMPDIR"
 mkdir -p "$TMPDIR"
 export TMPDIR                     #This is required on fedora to avoid Errorno 122 disk quota
+
+read -rp "Install CUDA version of PyTorch? [y/N] " REPLY </dev/tty
+REPLY=${REPLY:-N}
+
+if [[ "$REPLY" =~ ^[Yy]$ ]]; then
+    ok "CUDA PyTorch will be installed by dependencies"
+else
+    ok "Installing CPU-only PyTorch"
+    pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
+fi
+
 pip install --upgrade pip
 pip install -r "$INSTALL_DIR/requirements.txt"
 rm -rfd "$TMPDIR"
