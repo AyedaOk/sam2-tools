@@ -13,6 +13,7 @@ CONFIG_DIR="$HOME/.config/sam2"
 LAUNCHER_PATH="/usr/local/bin/sam2-tools"
 CHECKPOINT_DIR="$HOME/.config/sam2/checkpoints"
 TMPDIR="$HOME/.cache/sam2-tools/tmp"
+PLUGIN_DIR="$HOME/.config/darktable/lua/Custom"
 
 MODEL_URLS=(
   "https://dl.fbaipublicfiles.com/segment_anything_2/092824/sam2.1_hiera_tiny.pt"
@@ -256,14 +257,11 @@ read -rp "Do you want to install Darktable plugin? [Y/n] " REPLY </dev/tty
 REPLY=${REPLY:-Y}
 
 if [[ "$REPLY" =~ ^[Yy]$ ]]; then
-    if [ -d "$HOME/.config/darktable/lua" ]; then
-        mkdir -p "$HOME/.config/darktable/lua/SAM2"
-        curl -fL \
-          -o "$HOME/.config/darktable/lua/contrib/SAM2.lua" \
-          https://raw.githubusercontent.com/AyedaOk/DT_custom_script/main/SAM2.lua
-        ok "Plugin install completed."
+    if [ -d "$PLUGIN_DIR/.git" ]; then
+    git -C "$PLUGIN_DIR" pull
     else
-        warn "Darktable Lua directory not found — skipping plugin installation."
+        rm -rf "$PLUGIN_DIR"
+        git clone https://github.com/AyedaOk/DT_custom_script.git "$PLUGIN_DIR"
     fi
 else
     warn "Skipping plugin installation"
