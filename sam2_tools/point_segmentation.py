@@ -113,7 +113,7 @@ def run_point_segmentation(
     # save_dir = os.path.join(output_path, base)
     # os.makedirs(save_dir, exist_ok=True)
     #To save in same folder
-    save_dir = os.path.dirname(output_path)
+    save_dir = output_path
     base = os.path.splitext(os.path.basename(input_path))[0]
 
     # Load config
