@@ -16,7 +16,8 @@ def run_auto_segmentation(input_path, output_path, num_masks, model_id, pfm):
     # base = os.path.splitext(os.path.basename(input_path))[0]
     # save_dir = os.path.join(output_path, base)
     # os.makedirs(save_dir, exist_ok=True)
-    save_dir = os.path.dirname(input_path)
+    #To save in same folder
+    save_dir = os.path.dirname(output_path)
     base = os.path.splitext(os.path.basename(input_path))[0]
 
     # Load config
