@@ -176,7 +176,7 @@ rm -rfd "$TMPDIR"
 mkdir -p "$TMPDIR"
 export TMPDIR                     #This is required on fedora to avoid Errorno 122 disk quota
 
-read -rp "Install CUDA version of PyTorch? [y/N] " REPLY </dev/tty
+read -rp "Install PyTorch with NVIDIA GPU (CUDA) support? [y/N] " REPLY </dev/tty
 REPLY=${REPLY:-N}
 
 if [[ "$REPLY" =~ ^[Yy]$ ]]; then
@@ -207,7 +207,7 @@ fi
 # ---------------------------------------------------------
 
 echo ""
-warn "SAM2 model checkpoints are required (~3–4GB total)."
+warn "SAM2 model checkpoints are required (~1.5GB total)."
 read -rp "Download them now? [Y/n] " REPLY </dev/tty
 REPLY=${REPLY:-Y}
 
@@ -275,6 +275,7 @@ ok "=== Installation complete ==="
 echo "Installed to: $INSTALL_DIR"
 echo "Virtual env:  $VENV_DIR"
 echo "Launcher:     /usr/local/bin/sam2-tools"
+echo "Plugin:       $PLUGIN_DIR"
 echo ""
 echo "Run with:"
 echo "  sam2-tools"
