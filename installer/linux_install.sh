@@ -13,6 +13,7 @@ CONFIG_DIR="$HOME/.config/sam2"
 LAUNCHER_PATH="/usr/local/bin/sam2-tools"
 CHECKPOINT_DIR="$HOME/.config/sam2/checkpoints"
 TMPDIR="$HOME/.cache/sam2-tools/tmp"
+PLUGIN_DIR="$HOME/.config/darktable/lua/Custom"
 
 MODEL_URLS=(
   "https://dl.fbaipublicfiles.com/segment_anything_2/092824/sam2.1_hiera_tiny.pt"
@@ -174,6 +175,17 @@ ok "Installing Python dependencies..."
 rm -rfd "$TMPDIR"
 mkdir -p "$TMPDIR"
 export TMPDIR                     #This is required on fedora to avoid Errorno 122 disk quota
+
+read -rp "Install PyTorch with NVIDIA GPU (CUDA) support? [y/N] " REPLY </dev/tty
+REPLY=${REPLY:-N}
+
+if [[ "$REPLY" =~ ^[Yy]$ ]]; then
+    ok "CUDA PyTorch will be installed by dependencies"
+else
+    ok "Installing CPU-only PyTorch"
+    pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
+fi
+
 pip install --upgrade pip
 pip install -r "$INSTALL_DIR/requirements.txt"
 rm -rfd "$TMPDIR"
@@ -195,7 +207,7 @@ fi
 # ---------------------------------------------------------
 
 echo ""
-warn "SAM2 model checkpoints are required (~3–4GB total)."
+warn "SAM2 model checkpoints are required (~1.5GB total)."
 read -rp "Download them now? [Y/n] " REPLY </dev/tty
 REPLY=${REPLY:-Y}
 
@@ -245,14 +257,11 @@ read -rp "Do you want to install Darktable plugin? [Y/n] " REPLY </dev/tty
 REPLY=${REPLY:-Y}
 
 if [[ "$REPLY" =~ ^[Yy]$ ]]; then
-    if [ -d "$HOME/.config/darktable/lua" ]; then
-        mkdir -p "$HOME/.config/darktable/lua/SAM2"
-        curl -fL \
-          -o "$HOME/.config/darktable/lua/contrib/SAM2.lua" \
-          https://raw.githubusercontent.com/AyedaOk/DT_custom_script/main/SAM2.lua
-        ok "Plugin install completed."
+    if [ -d "$PLUGIN_DIR/.git" ]; then
+    git -C "$PLUGIN_DIR" pull
     else
-        warn "Darktable Lua directory not found — skipping plugin installation."
+        rm -rf "$PLUGIN_DIR"
+        git clone https://github.com/AyedaOk/DT_custom_script.git "$PLUGIN_DIR"
     fi
 else
     warn "Skipping plugin installation"
@@ -266,6 +275,7 @@ ok "=== Installation complete ==="
 echo "Installed to: $INSTALL_DIR"
 echo "Virtual env:  $VENV_DIR"
 echo "Launcher:     /usr/local/bin/sam2-tools"
+echo "Plugin:       $PLUGIN_DIR"
 echo ""
 echo "Run with:"
 echo "  sam2-tools"
