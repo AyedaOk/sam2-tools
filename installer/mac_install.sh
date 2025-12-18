@@ -206,22 +206,25 @@ if [[ -f "$LAUNCHER_OUT" ]]; then
   cp -f "$LAUNCHER_OUT" "$LAUNCHER_OUT.bak"
 fi
 
-cat > "$LAUNCHER_OUT" <<EOF
+cat > "$LAUNCHER_OUT" <<'EOF'
 #!/bin/bash
 set -e
-APP_DIR="$INSTALL_DIR"
-VENV_PY="\$APP_DIR/venv/bin/python3"
+APP_DIR="__APP_DIR__"
+VENV_PY="$APP_DIR/venv/bin/python3"
 
-cd "\$APP_DIR"
+cd "$APP_DIR"
 
-if [ ! -x "\$VENV_PY" ]; then
-  echo "Could not find venv python at: \$VENV_PY"
+if [ ! -x "$VENV_PY" ]; then
+  echo "Could not find venv python at: $VENV_PY"
   echo "Re-run the installer to recreate the venv."
   exit 1
 fi
 
-exec "\$VENV_PY" main.py "\$@"
+exec "$VENV_PY" main.py "$@"
 EOF
+
+sed -i '' "s|__APP_DIR__|$INSTALL_DIR|g" "$LAUNCHER_OUT"
+
 
 chmod +x "$LAUNCHER_OUT"
 
