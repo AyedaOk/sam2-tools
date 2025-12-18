@@ -30,6 +30,11 @@ Linux:
 curl -fsSL https://raw.githubusercontent.com/AyedaOk/sam2-tools/main/installer/linux_install.sh?nocache=$(date +%s) | bash
 ```
 
+Windows:
+```
+powershell -ExecutionPolicy Bypass -Command "iwr https://raw.githubusercontent.com/AyedaOk/sam2-tools/main/installer/win_install.ps1 | iex"
+```
+
 ### Linux Installation Steps:
 
 Install the following first:
@@ -127,11 +132,21 @@ Install the following first:
 - Python 3.10–3.13  
 https://www.python.org/downloads/  
 
+```
+winget install -e --id Python.Python.3.13
+```
+
 - Microsoft Visual C++ Redistributable (required for PyTorch)  
 https://aka.ms/vs/17/release/vc_redist.x64.exe  
+```
+winget install --id Microsoft.VCRedist.2015+.x64
+```
 
 - Git for Windows  
 https://git-scm.com/download/win  
+```
+winget install --id Git.Git -e --source winget
+```
 
 Open PowerShell and clone the project (recommended location: Documents):
 
