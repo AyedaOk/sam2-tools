@@ -49,7 +49,7 @@ powershell -ExecutionPolicy Bypass -Command "iwr https://raw.githubusercontent.c
 #### macOS
 
 ```
-bash curl -fsSL "https://raw.githubusercontent.com/AyedaOk/sam2-tools/release/v0.2/installer/mac_install.sh" | bash
+curl -fsSL "https://raw.githubusercontent.com/AyedaOk/sam2-tools/release/v0.2/installer/mac_install.sh" | bash
 ```
 
 ### Linux Installation Steps:
