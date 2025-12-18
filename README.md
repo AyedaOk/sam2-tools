@@ -23,16 +23,33 @@ Step‑by‑step install walkthrough on Windows → https://youtu.be/atBNxKHZ0ag
 
 Step‑by‑step install walkthrough on macOS → Comming soon...
 
-### Installation Scripts
+### Installation scripts
 
-Linux: 
+The installation script is the easiest way to install **sam2-tools**. It will:
+
+* Install dependencies
+* Clone the repository
+* Create a virtual environment
+* Install the Python app and its requirements
+* Download the SAM2 model checkpoints (Optional)
+* Install the Darktable plugin (Optional)
+
+#### Linux
+
 ```
-curl -fsSL https://raw.githubusercontent.com/AyedaOk/sam2-tools/main/installer/linux_install.sh?nocache=$(date +%s) | bash
+bash curl -fsSL https://raw.githubusercontent.com/AyedaOk/sam2-tools/main/installer/linux_install.sh | bash
 ```
 
-Windows:
+#### Windows
+
 ```
-powershell -ExecutionPolicy Bypass -Command "iwr https://raw.githubusercontent.com/AyedaOk/sam2-tools/main/installer/win_install.ps1 | iex"
+powershell -ExecutionPolicy Bypass -Command "iwr https://raw.githubusercontent.com/AyedaOk/sam2-tools/release/v0.2/installer/win_install.ps1 | iex"
+```
+
+#### macOS
+
+```
+bash curl -fsSL "https://raw.githubusercontent.com/AyedaOk/sam2-tools/release/v0.2/installer/mac_install.sh" | bash
 ```
 
 ### Linux Installation Steps:
