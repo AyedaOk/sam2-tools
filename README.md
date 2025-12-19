@@ -37,7 +37,7 @@ The installation script is the easiest way to install **sam2-tools**. It will:
 #### Linux
 
 ```
-bash curl -fsSL https://raw.githubusercontent.com/AyedaOk/sam2-tools/main/installer/linux_install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/AyedaOk/sam2-tools/main/installer/linux_install.sh | bash
 ```
 
 #### Windows
