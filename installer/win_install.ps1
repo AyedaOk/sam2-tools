@@ -68,10 +68,10 @@ if (-not $pythonOK -or $MissingGit -or $MissingVC) {
     }
 
     if ($MissingVC) {
-        winget install --id Microsoft.VCRedist.2015+.x64 --accept-package-agreements --accept-source-agreements
+        winget install -e --id Microsoft.VCRedist.2015+.x64 --source winget --accept-package-agreements --accept-source-agreementsts
     }
     if (-not $pythonOK) {
-        winget install -e --id Python.Python.3.13 --accept-package-agreements --accept-source-agreements #Tried 3.14 and it didn't work'
+        winget install -e --id Python.Python.3.13 --source winget --accept-package-agreements --accept-source-agreements #Tried 3.14 and it didn't work'
     }
     if ($MissingGit) {
         winget install -e --id Git.Git --source winget --accept-package-agreements --accept-source-agreements
