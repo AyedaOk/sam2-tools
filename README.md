@@ -183,7 +183,7 @@ Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
 Activate the virtual environment and install dependencies:
 
 ```
-venv\Scripts\activate
+venv/bin/activate
 pip install -r requirements.txt
 ```
 
