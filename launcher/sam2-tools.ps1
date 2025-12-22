@@ -1,28 +1,22 @@
-# Detect if running inside an EXE or as a loose .ps1
-if ($MyInvocation.MyCommand.Path) {
-    # Running as .ps1
-    $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
-} else {
-    # Running as a compiled EXE (ps2exe)
-    $ScriptDir = [System.AppDomain]::CurrentDomain.BaseDirectory
-}
-
-# Root of the project (one level above launcher/)
-$RootDir = Split-Path $ScriptDir
-
 # Paths
-$PythonExe = Join-Path $RootDir "venv\Scripts\python.exe"
-$MainPy    = Join-Path $RootDir "main.py"
+$MainPy = Join-Path $RootDir "main.py"
 
-# Check venv exists
-if (!(Test-Path $PythonExe)) {
-    Write-Host "Virtual environment not found."
-    Write-Host "Please run:"
-    Write-Host "  python -m venv venv"
-    Write-Host "  venv\Scripts\activate"
-    Write-Host "  pip install -r requirements.txt"
+$LegacyPython = Join-Path $RootDir "venv\Scripts\python.exe"
+$UvPython     = Join-Path $RootDir ".venv\Scripts\python.exe"
+
+# Pick python from venv (legacy) or .venv (uv)
+if (Test-Path $LegacyPython) {
+    $PythonExe = $LegacyPython
+} elseif (Test-Path $UvPython) {
+    $PythonExe = $UvPython
+} else {
+    Write-Host "Virtual environment not found (expected venv\ or .venv\)." -ForegroundColor Red
+    Write-Host "Re-run the installer to create it." -ForegroundColor Yellow
     exit 1
 }
+
+# Ensure we run from project root so relative paths work
+Set-Location $RootDir
 
 # Run main
 & $PythonExe $MainPy @Args
