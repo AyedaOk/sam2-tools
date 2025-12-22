@@ -9,14 +9,13 @@ echo "=== SAM2-Tools Installer (macOS / Apple Silicon) ==="
 REPO_URL="https://github.com/AyedaOk/sam2-tools.git"
 
 INSTALL_DIR="${INSTALL_DIR:-$HOME/Applications/sam2-tools}"
-VENV_DIR="$INSTALL_DIR/venv"
+VENV_DIR="$INSTALL_DIR/.venv"   # uv default
 
 CONFIG_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/sam2"
 CHECKPOINT_DIR="$CONFIG_DIR/checkpoints"
 
 PLUGIN_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/darktable/lua/Custom"
 
-# Generated user launcher
 LAUNCHER_OUT="${LAUNCHER_OUT:-$HOME/Applications/sam2-tools.command}"
 
 MODEL_URLS=(
@@ -32,6 +31,8 @@ MODEL_URLS=(
 ok()   { printf "\033[1;32m%s\033[0m\n" "$1"; }
 warn() { printf "\033[1;33m%s\033[0m\n" "$1"; }
 err()  { printf "\033[1;31m%s\033[0m\n" "$1"; }
+
+has_cmd() { command -v "$1" >/dev/null 2>&1; }
 
 confirm() {
   # Usage: confirm "Question" "Y"|"N"
@@ -58,9 +59,8 @@ download() {
     -o "$2" "$1"
 }
 
-
 # ---------------------------------------------------------
-# 1. Platform checks 
+# 1. Platform checks
 # ---------------------------------------------------------
 if [[ "$(uname -s)" != "Darwin" ]]; then
   err "This installer is for macOS only."
@@ -98,21 +98,22 @@ eval "$("$BREW" shellenv)"
 ok "Using Homebrew: $BREW"
 
 # ---------------------------------------------------------
-# 3. Install dependencies (git, python, python-tk)
+# 3. Install dependencies (git, uv)
 # ---------------------------------------------------------
-ok "Installing dependencies (git, python, python-tk)..."
+ok "Installing dependencies (git, uv)..."
 brew update
-brew install git python python-tk
+brew install git uv
 
-# Do NOT rely on plain `python3` in PATH; use Homebrew prefix directly
-BREW_PREFIX="$(brew --prefix)"
-PYTHON_BIN="$BREW_PREFIX/bin/python3"
-if [[ ! -x "$PYTHON_BIN" ]]; then
-  err "Homebrew python3 not found at: $PYTHON_BIN"
-  err "Check: ls \"$BREW_PREFIX/bin/python3*\""
+if ! has_cmd git; then
+  err "git not found after brew install."
   exit 1
 fi
-ok "Using Python: $PYTHON_BIN"
+if ! has_cmd uv; then
+  err "uv not found after brew install."
+  err "Try: brew doctor && brew reinstall uv"
+  exit 1
+fi
+ok "Using uv: $(command -v uv)"
 
 # ---------------------------------------------------------
 # 4. Clone or update repo
@@ -131,35 +132,28 @@ else
   git clone "$REPO_URL" "$INSTALL_DIR"
 fi
 
+cd "$INSTALL_DIR"
+
 # ---------------------------------------------------------
-# 5. Create virtual environment and activate the virtual environment
+# 5. Create virtual environment with uv (.venv)
 # ---------------------------------------------------------
 if [[ ! -d "$VENV_DIR" ]]; then
-  ok "Creating virtual environment..."
-  "$PYTHON_BIN" -m venv "$VENV_DIR"
+  ok "Creating virtual environment with uv..."
+  uv venv
 else
-  ok "Virtual environment already exists."
+  ok "Virtual environment already exists: $VENV_DIR"
 fi
 
-ok "Activating virtual environment for shell"
-# shellcheck disable=SC1090
-source "$VENV_DIR/bin/activate"
-
 # ---------------------------------------------------------
-# 6. Install PyTorch first then requirements
+# 6. Install PyTorch first then requirements (via uv)
 # ---------------------------------------------------------
-ok "Upgrading pip..."
-python -m pip install --upgrade pip
-
 ok "Installing PyTorch first (CPU index)..."
-# Note: if requirements.txt pins torch/torchvision to different versions,
-# pip may later adjust them during the requirements install.
-python -m pip install torch torchvision \
+uv pip install torch torchvision \
   --index-url https://download.pytorch.org/whl/cpu \
   --extra-index-url https://pypi.org/simple
 
 ok "Installing Python dependencies from requirements.txt..."
-python -m pip install -r "$INSTALL_DIR/requirements.txt"
+uv pip install -r requirements.txt
 
 # ---------------------------------------------------------
 # 7. Create config
@@ -167,7 +161,7 @@ python -m pip install -r "$INSTALL_DIR/requirements.txt"
 mkdir -p "$CONFIG_DIR"
 if [[ ! -f "$CONFIG_DIR/config.yaml" ]]; then
   ok "Generating config..."
-  (cd "$INSTALL_DIR" && python main.py --config)
+  uv run python main.py --config
 else
   ok "Config already exists."
 fi
@@ -210,7 +204,7 @@ cat > "$LAUNCHER_OUT" <<EOF
 #!/bin/bash
 set -e
 APP_DIR="$INSTALL_DIR"
-VENV_PY="\$APP_DIR/venv/bin/python3"
+VENV_PY="\$APP_DIR/.venv/bin/python"
 
 cd "\$APP_DIR"
 
@@ -257,5 +251,7 @@ echo "Plugin:        $PLUGIN_DIR"
 echo ""
 echo "Run with:"
 echo "  \"$LAUNCHER_OUT\""
+echo "or:"
+echo "  cd \"$INSTALL_DIR\" && uv run python main.py"
 echo ""
-warn "If pip fails building wheels, install Xcode CLT with: xcode-select --install (then re-run)."
+warn "If builds fail (missing compilers/headers), install Xcode CLT with: xcode-select --install (then re-run)."
