@@ -43,13 +43,13 @@ curl -fsSL https://raw.githubusercontent.com/AyedaOk/sam2-tools/main/installer/l
 #### Windows
 
 ```
-powershell -ExecutionPolicy Bypass -Command "iwr https://raw.githubusercontent.com/AyedaOk/sam2-tools/release/v0.2/installer/win_install.ps1 | iex"
+powershell -ExecutionPolicy Bypass -Command "iwr https://raw.githubusercontent.com/AyedaOk/sam2-tools/main/installer/win_install.ps1 | iex"
 ```
 
 #### macOS
 
 ```
-bash <(curl -fsSL "https://raw.githubusercontent.com/AyedaOk/sam2-tools/release/v0.2/installer/mac_install.sh")
+bash <(curl -fsSL "https://raw.githubusercontent.com/AyedaOk/sam2-tools/main/installer/mac_install.sh")
 ```
 
 ### Linux Installation Steps:

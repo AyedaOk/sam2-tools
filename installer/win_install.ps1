@@ -1,5 +1,5 @@
 # SAM2-Tools Windows Installer (uv, .venv only)
-Write-Host "=== SAM2-Tools Installer (Windows, uv) ==="
+Write-Host "=== SAM2-Tools Installer (Windows) ==="
 
 # ---------------------------------------------------------
 # Paths
@@ -61,9 +61,6 @@ function Download-File {
 
 # ---------------------------------------------------------
 # 1) Dependency checks (winget auto-install)
-#   - uv
-#   - git
-#   - VC++ 2015-2022 x64 redistributable (runtime)
 # ---------------------------------------------------------
 $MissingGit = -not (Has-Cmd "git")
 $MissingUv  = -not (Has-Cmd "uv")
