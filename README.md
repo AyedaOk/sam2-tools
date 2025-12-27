@@ -17,6 +17,8 @@ SAM2‑Tools is a lightweight Python application offering both a simple GUI and 
 ## Install
 ### Installation Videos
 
+Installation script for Linux, Windows and macOS → https://youtu.be/eEfsPIzWtTQ
+
 Step‑by‑step install walkthrough on Linux → https://youtu.be/C98gejXkQqI
 
 Step‑by‑step install walkthrough on Windows → https://youtu.be/atBNxKHZ0ag
