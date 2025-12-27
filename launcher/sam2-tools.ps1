@@ -1,4 +1,5 @@
 # Paths
+$RootDir = Resolve-Path (Join-Path $PSScriptRoot "..")
 $MainPy = Join-Path $RootDir "main.py"
 
 $LegacyPython = Join-Path $RootDir "venv\Scripts\python.exe"
