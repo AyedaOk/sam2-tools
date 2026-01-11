@@ -3,7 +3,7 @@ import numpy as np
 import cv2
 import torch
 from PIL import Image
-
+from datetime import datetime, timezone
 from sam2.build_sam import build_sam2
 from sam2.sam2_image_predictor import SAM2ImagePredictor
 
@@ -174,7 +174,7 @@ def run_point_segmentation(
             return
 
     cv2.destroyAllWindows()
-
+    ts = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S_%f")
     if final_mask is None:
         print("No mask generated.")
         return
@@ -183,10 +183,10 @@ def run_point_segmentation(
     mask = final_mask.squeeze().astype(np.uint8) * 255
 
     if pfm:
-        out = get_unique_path(f"{save_dir}/{base}_mask.pfm")
+        out = get_unique_path(f"{save_dir}/{base}_{ts}_mask.pfm")
         save_pfm(out, final_mask.squeeze())  # PFM uses float mask, not 0–255
     else:
-        out = get_unique_path(f"{save_dir}/{base}_mask.png")
+        out = get_unique_path(f"{save_dir}/{base}_{ts}_mask.png")
         Image.fromarray(mask).save(out)
 
     print("Saved:", out)

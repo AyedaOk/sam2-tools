@@ -2,7 +2,7 @@ import os
 import numpy as np
 import torch
 from PIL import Image
-
+from datetime import datetime, timezone
 from sam2.build_sam import build_sam2
 from sam2.automatic_mask_generator import SAM2AutomaticMaskGenerator
 from .shared_utils import (
@@ -11,12 +11,13 @@ from .shared_utils import (
     save_pfm,
 )
 
+
 def run_auto_segmentation(input_path, output_path, num_masks, model_id, pfm):
     # To save in a subfolder
     # base = os.path.splitext(os.path.basename(input_path))[0]
     # save_dir = os.path.join(output_path, base)
     # os.makedirs(save_dir, exist_ok=True)
-    #To save in same folder
+    # To save in same folder
     save_dir = output_path
     base = os.path.splitext(os.path.basename(input_path))[0]
 
@@ -39,7 +40,9 @@ def run_auto_segmentation(input_path, output_path, num_masks, model_id, pfm):
     print("Using device:", device)
 
     # Load model
-    sam2_model = build_sam2(model_cfg, checkpoint, device=device, apply_postprocessing=False)
+    sam2_model = build_sam2(
+        model_cfg, checkpoint, device=device, apply_postprocessing=False
+    )
     generator = SAM2AutomaticMaskGenerator(sam2_model)
 
     # Load input
@@ -50,15 +53,15 @@ def run_auto_segmentation(input_path, output_path, num_masks, model_id, pfm):
         masks = generator.generate(image_np)
 
     print("Generated masks:", len(masks))
-
+    ts = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S_%f")
     # Save masks
     for i, m in enumerate(masks[:num_masks]):
         seg = m["segmentation"]
         if pfm:
-            out = get_unique_path(f"{save_dir}/{base}_mask_{i}.pfm")
+            out = get_unique_path(f"{save_dir}/{base}_{ts}_mask_{i}.pfm")
             save_pfm(out, seg)
         else:
-            out = get_unique_path(f"{save_dir}/{base}_mask_{i}.png")
-            Image.fromarray((seg.astype(np.uint8) * 255)).save(out)
+            out = get_unique_path(f"{save_dir}/{base}_{ts}_mask_{i}.png")
+            Image.fromarray(seg.astype(np.uint8) * 255).save(out)
 
         print("Saved:", out)
