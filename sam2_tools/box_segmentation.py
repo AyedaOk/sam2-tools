@@ -12,6 +12,7 @@ from .shared_utils import (
     load_or_create_config,
     get_unique_path,
     save_pfm,
+    load_image_rgb,
     BoxSelector,
 )
 
@@ -44,7 +45,9 @@ def run_box_segmentation(
     device = "cuda" if torch.cuda.is_available() else "cpu"
     print("Using device:", device)
 
-    bgr_img = cv2.imread(input_path)
+    rgb, bgr_img = load_image_rgb(input_path)
+    if bgr_img is None:
+        return
     H, W, _ = bgr_img.shape
 
     # Get user box if not provided
@@ -72,7 +75,6 @@ def run_box_segmentation(
         cv2.destroyAllWindows()
 
     x1, y1, x2, y2 = box
-    rgb = np.array(Image.open(input_path).convert("RGB"))
 
     # Load model
     sam2_model = build_sam2(model_cfg, checkpoint, device=device)

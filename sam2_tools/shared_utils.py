@@ -4,6 +4,43 @@ from pathlib import Path
 import numpy as np
 import yaml
 import cv2
+import rawpy
+from PIL import Image
+
+RAW_EXTENSIONS = {
+    ".3fr",
+    ".ari",
+    ".arw",
+    ".bay",
+    ".cap",
+    ".cr2",
+    ".cr3",
+    ".crw",
+    ".dcr",
+    ".dcs",
+    ".dng",
+    ".eip",
+    ".erf",
+    ".iiq",
+    ".kdc",
+    ".mef",
+    ".mos",
+    ".mrw",
+    ".nef",
+    ".nrw",
+    ".orf",
+    ".pef",
+    ".ptx",
+    ".raf",
+    ".r3d",
+    ".rw2",
+    ".rwl",
+    ".rwz",
+    ".sr2",
+    ".srf",
+    ".srw",
+    ".x3f",
+}
 
 
 # ============================================================
@@ -17,6 +54,7 @@ def get_unique_path(path):
         new_path = f"{base}_{counter}{ext}"
         counter += 1
     return new_path
+
 
 # ============================================================
 # Save PFM files
@@ -38,14 +76,59 @@ def save_pfm(path, image, scale=1.0):
 
         image.tofile(f)
 
+
+# ============================================================
+# Image loading
+# ============================================================
+def load_image_rgb(path):
+    if not os.path.isfile(path):
+        print("Input not found:", path)
+        return None, None
+
+    ext = Path(path).suffix.lower()
+    try:
+        if ext in RAW_EXTENSIONS:
+            with rawpy.imread(path) as raw:
+                rgb = raw.postprocess()
+        else:
+            rgb = np.array(Image.open(path).convert("RGB"))
+    except Exception as exc:
+        print("Failed to load image:", exc)
+        return None, None
+
+    bgr = cv2.cvtColor(rgb, cv2.COLOR_RGB2BGR)
+    return rgb, bgr
+
+
+# ============================================================
+# Config handling
+# ============================================================
+
+
+def save_pfm(path, image, scale=1.0):
+    image = np.flipud(image)
+
+    if image.dtype != np.float32:
+        image = image.astype(np.float32)
+
+    color = image.ndim == 3 and image.shape[2] == 3
+
+    with open(path, "wb") as f:
+        f.write(b"PF\n" if color else b"Pf\n")
+        f.write(f"{image.shape[1]} {image.shape[0]}\n".encode())
+
+        endian = -scale if image.dtype.byteorder in ("=", "little") else scale
+        f.write(f"{endian}\n".encode())
+
+        image.tofile(f)
+
+
 # ============================================================
 # Config handling
 # ============================================================
 def get_config_path():
     if platform.system().lower() == "windows":
-        base = Path(
-            os.getenv("APPDATA", Path.home() / "AppData" / "Roaming")
-        )
+        base = Path(os.getenv("APPDATA", Path.home() / "AppData" / "Roaming"))
         cfg_dir = base / "sam2"
     else:
         cfg_dir = Path.home() / ".config" / "sam2"
@@ -84,6 +167,7 @@ def load_or_create_config():
 
     with open(cfg_path, "r") as f:
         return yaml.safe_load(f)
+
 
 # ============================================================
 # Box Selector (OpenCV drawing)

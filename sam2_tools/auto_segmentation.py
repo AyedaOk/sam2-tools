@@ -9,6 +9,7 @@ from .shared_utils import (
     load_or_create_config,
     get_unique_path,
     save_pfm,
+    load_image_rgb,
 )
 
 
@@ -46,8 +47,9 @@ def run_auto_segmentation(input_path, output_path, num_masks, model_id, pfm):
     generator = SAM2AutomaticMaskGenerator(sam2_model)
 
     # Load input
-    img = Image.open(input_path).convert("RGB")
-    image_np = np.array(img)
+    image_np, _ = load_image_rgb(input_path)
+    if image_np is None:
+        return
 
     with torch.inference_mode():
         masks = generator.generate(image_np)
