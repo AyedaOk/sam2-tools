@@ -353,4 +353,4 @@ python3 main.py --points -i /path/to/input.jpg -o /path/to/output/
 
 ## License
 
-GPL-3.0
+GPLv3
