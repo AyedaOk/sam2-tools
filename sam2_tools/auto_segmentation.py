@@ -2,21 +2,23 @@ import os
 import numpy as np
 import torch
 from PIL import Image
-
+from datetime import datetime, timezone
 from sam2.build_sam import build_sam2
 from sam2.automatic_mask_generator import SAM2AutomaticMaskGenerator
 from .shared_utils import (
     load_or_create_config,
     get_unique_path,
     save_pfm,
+    load_image_rgb,
 )
+
 
 def run_auto_segmentation(input_path, output_path, num_masks, model_id, pfm):
     # To save in a subfolder
     # base = os.path.splitext(os.path.basename(input_path))[0]
     # save_dir = os.path.join(output_path, base)
     # os.makedirs(save_dir, exist_ok=True)
-    #To save in same folder
+    # To save in same folder
     save_dir = output_path
     base = os.path.splitext(os.path.basename(input_path))[0]
 
@@ -39,26 +41,29 @@ def run_auto_segmentation(input_path, output_path, num_masks, model_id, pfm):
     print("Using device:", device)
 
     # Load model
-    sam2_model = build_sam2(model_cfg, checkpoint, device=device, apply_postprocessing=False)
+    sam2_model = build_sam2(
+        model_cfg, checkpoint, device=device, apply_postprocessing=False
+    )
     generator = SAM2AutomaticMaskGenerator(sam2_model)
 
     # Load input
-    img = Image.open(input_path).convert("RGB")
-    image_np = np.array(img)
+    image_np, _ = load_image_rgb(input_path)
+    if image_np is None:
+        return
 
     with torch.inference_mode():
         masks = generator.generate(image_np)
 
     print("Generated masks:", len(masks))
-
+    ts = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S_%f")
     # Save masks
     for i, m in enumerate(masks[:num_masks]):
         seg = m["segmentation"]
         if pfm:
-            out = get_unique_path(f"{save_dir}/{base}_mask_{i}.pfm")
+            out = get_unique_path(f"{save_dir}/{base}_{ts}_mask_{i}.pfm")
             save_pfm(out, seg)
         else:
-            out = get_unique_path(f"{save_dir}/{base}_mask_{i}.png")
-            Image.fromarray((seg.astype(np.uint8) * 255)).save(out)
+            out = get_unique_path(f"{save_dir}/{base}_{ts}_mask_{i}.png")
+            Image.fromarray(seg.astype(np.uint8) * 255).save(out)
 
         print("Saved:", out)

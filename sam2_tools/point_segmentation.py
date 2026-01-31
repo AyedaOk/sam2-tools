@@ -3,7 +3,7 @@ import numpy as np
 import cv2
 import torch
 from PIL import Image
-
+from datetime import datetime, timezone
 from sam2.build_sam import build_sam2
 from sam2.sam2_image_predictor import SAM2ImagePredictor
 
@@ -11,7 +11,9 @@ from .shared_utils import (
     load_or_create_config,
     get_unique_path,
     save_pfm,
+    load_image_rgb,
 )
+
 
 # ============================================================
 # Point Selector (interactive point mode)
@@ -84,13 +86,14 @@ class PointSelector:
             img[mask > 0] = (0, 0, 255)
 
         # Draw points
-        for (x, y) in self.points_pos:
+        for x, y in self.points_pos:
             cv2.circle(img, (x, y), 5, (0, 255, 0), -1)  # green = FG
 
-        for (x, y) in self.points_neg:
+        for x, y in self.points_neg:
             cv2.circle(img, (x, y), 5, (0, 0, 255), -1)  # red = BG
 
         self.image_bgr = img
+
 
 # ============================================================
 # RUN POINT SEGMENTATION
@@ -108,11 +111,11 @@ def run_point_segmentation(
         return
 
     os.makedirs(output_path, exist_ok=True)
-    #To save in a sub-folder
+    # To save in a sub-folder
     # base = os.path.splitext(os.path.basename(input_path))[0]
     # save_dir = os.path.join(output_path, base)
     # os.makedirs(save_dir, exist_ok=True)
-    #To save in same folder
+    # To save in same folder
     save_dir = output_path
     base = os.path.splitext(os.path.basename(input_path))[0]
 
@@ -138,13 +141,9 @@ def run_point_segmentation(
     predictor = SAM2ImagePredictor(sam2_model)
 
     # Load image
-    bgr_img = cv2.imread(input_path)
+    rgb, bgr_img = load_image_rgb(input_path)
     if bgr_img is None:
-        print("Failed to load image:", input_path)
         return
-
-    # Prepare image for predictor
-    rgb = cv2.cvtColor(bgr_img, cv2.COLOR_BGR2RGB)
 
     with torch.inference_mode():
         predictor.set_image(rgb)
@@ -174,7 +173,7 @@ def run_point_segmentation(
             return
 
     cv2.destroyAllWindows()
-
+    ts = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S_%f")
     if final_mask is None:
         print("No mask generated.")
         return
@@ -183,10 +182,10 @@ def run_point_segmentation(
     mask = final_mask.squeeze().astype(np.uint8) * 255
 
     if pfm:
-        out = get_unique_path(f"{save_dir}/{base}_mask.pfm")
+        out = get_unique_path(f"{save_dir}/{base}_{ts}_mask.pfm")
         save_pfm(out, final_mask.squeeze())  # PFM uses float mask, not 0–255
     else:
-        out = get_unique_path(f"{save_dir}/{base}_mask.png")
+        out = get_unique_path(f"{save_dir}/{base}_{ts}_mask.png")
         Image.fromarray(mask).save(out)
 
     print("Saved:", out)
