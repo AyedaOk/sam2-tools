@@ -46,7 +46,7 @@ def run_box_segmentation(
     print("Using device:", device)
 
     rgb, bgr_img = load_image_rgb(input_path)
-    if bgr_img is None:
+    if rgb is None or bgr_img is None:
         return
     H, W, _ = bgr_img.shape
 
@@ -54,7 +54,7 @@ def run_box_segmentation(
     if box is None:
         print("Draw selection box...")
         win = "Box Selection (Enter=OK, R=reset, Esc=cancel)"
-        selector = BoxSelector(bgr_img.copy())
+        selector = BoxSelector(bgr_img.copy(), win_name=win)
 
         cv2.namedWindow(win, cv2.WINDOW_NORMAL)
         cv2.setMouseCallback(win, selector.mouse_cb)

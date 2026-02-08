@@ -103,29 +103,6 @@ def load_image_rgb(path):
 # ============================================================
 # Config handling
 # ============================================================
-
-
-def save_pfm(path, image, scale=1.0):
-    image = np.flipud(image)
-
-    if image.dtype != np.float32:
-        image = image.astype(np.float32)
-
-    color = image.ndim == 3 and image.shape[2] == 3
-
-    with open(path, "wb") as f:
-        f.write(b"PF\n" if color else b"Pf\n")
-        f.write(f"{image.shape[1]} {image.shape[0]}\n".encode())
-
-        endian = -scale if image.dtype.byteorder in ("=", "little") else scale
-        f.write(f"{endian}\n".encode())
-
-        image.tofile(f)
-
-
-# ============================================================
-# Config handling
-# ============================================================
 def get_config_path():
     if platform.system().lower() == "windows":
         base = Path(os.getenv("APPDATA", Path.home() / "AppData" / "Roaming"))
@@ -143,7 +120,8 @@ def load_or_create_config():
     if not cfg_path.exists():
         if platform.system().lower() == "windows":
             # Correct Windows path
-            base = Path(os.getenv("APPDATA")) / "sam2" / "checkpoints"
+            appdata = os.getenv("APPDATA", str(Path.home() / "AppData" / "Roaming"))
+            base = Path(appdata) / "sam2" / "checkpoints"
         else:
             # Correct Linux/macOS path
             base = Path.home() / ".config" / "sam2" / "checkpoints"
@@ -173,15 +151,33 @@ def load_or_create_config():
 # Box Selector (OpenCV drawing)
 # ============================================================
 class BoxSelector:
-    def __init__(self, img):
+    def __init__(self, img, win_name=None):
         self.image_bgr = img
         self.clone = img.copy()
         self.start = None
         self.end = None
         self.drawing = False
+        self.win_name = win_name
+
+    def _line_thickness(self):
+        if not self.win_name or not hasattr(cv2, "getWindowImageRect"):
+            return 2
+
+        try:
+            _, _, win_w, win_h = cv2.getWindowImageRect(self.win_name)
+        except cv2.error:
+            return 2
+
+        if win_w <= 0 or win_h <= 0:
+            return 2
+
+        img_h, img_w = self.image_bgr.shape[:2]
+        scale_x = img_w / win_w
+        scale_y = img_h / win_h
+        return max(2, int(np.ceil(max(scale_x, scale_y))))
 
     def reset(self):
-        self.image_bgr = self.clone.copy()
+        self.image_bgr[:] = self.clone
         self.start = None
         self.end = None
         self.drawing = False
@@ -194,16 +190,28 @@ class BoxSelector:
 
         elif event == cv2.EVENT_MOUSEMOVE and self.drawing:
             self.end = (x, y)
-            temp = self.clone.copy()
-            cv2.rectangle(temp, self.start, self.end, (0, 255, 0), 2)
-            self.image_bgr = temp
+            self.image_bgr[:] = self.clone
+            if self.start and self.end:
+                cv2.rectangle(
+                    self.image_bgr,
+                    self.start,
+                    self.end,
+                    (0, 255, 0),
+                    self._line_thickness(),
+                )
 
         elif event == cv2.EVENT_LBUTTONUP:
             self.drawing = False
             self.end = (x, y)
-            temp = self.clone.copy()
-            cv2.rectangle(temp, self.start, self.end, (0, 255, 0), 2)
-            self.image_bgr = temp
+            self.image_bgr[:] = self.clone
+            if self.start and self.end:
+                cv2.rectangle(
+                    self.image_bgr,
+                    self.start,
+                    self.end,
+                    (0, 255, 0),
+                    self._line_thickness(),
+                )
 
     def get_box(self):
         if not self.start or not self.end:
